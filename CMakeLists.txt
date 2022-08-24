@@ -17,11 +17,15 @@ set(CMAKE_CXX_STANDARD 17)
 # Source files
 set(SOURCES
     source/main.cpp
+    source/my_allocator.cpp
+    include/my_allocator.h
 )
 
 # Source tests files
 set(TEST_SOURCES
     test/source/test_allocator.cpp
+    source/my_allocator.cpp
+    include/my_allocator.h
 )
 
 # Include directories
