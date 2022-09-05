@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 # Project name
 set(PATCH_VERSION "0" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
-project(allocator VERSION ${PROJECT_VESRION})
+project(allocator1 VERSION ${PROJECT_VESRION})
 
 # Include lib conan test
 if(TEST)
@@ -17,15 +17,13 @@ set(CMAKE_CXX_STANDARD 17)
 # Source files
 set(SOURCES
     source/main.cpp
-    source/my_allocator.cpp
-    include/my_allocator.h
+    include/my_allocator.hpp
 )
 
 # Source tests files
 set(TEST_SOURCES
     test/source/test_allocator.cpp
-    source/my_allocator.cpp
-    include/my_allocator.h
+    include/my_allocator.hpp
 )
 
 # Include directories
