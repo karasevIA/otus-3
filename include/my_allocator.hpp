@@ -93,26 +93,30 @@ namespace My {
     struct Allocator {
         using value_type = T;
         Allocator() {
+            objects += 1;
             //std::cout << "constructor" << std::endl;
-            bank = reinterpret_cast<MemoryBank*>(std::calloc(1, sizeof(MemoryBank)));
-            std::size_t bs = block_size ? block_size : default_block_size;
-            T* p1 = allocate(bs);
-            T* p2 = allocate(bs);
-            deallocate(p1, bs);
-            deallocate(p2, bs);
+            if (!bank) {
+                bank = reinterpret_cast<MemoryBank*>(std::calloc(1, sizeof(MemoryBank)));
+                std::size_t bs = block_size ? block_size : default_block_size;
+                T* p1 = allocate(bs);
+                T* p2 = allocate(bs);
+                deallocate(p1, bs);
+                deallocate(p2, bs);    
+            }
             //bank->print();
         }
 
         ~Allocator() {
-            //std::cout << "destructor " << bank->used << "/" << bank->allocated << std::endl;
-            if (bank->allocated == 0) {
+            objects -= 1;
+            if (bank->used == 0 && objects == 0) {
                 bank->destruct();
+                std::free(bank);
             }
         }
 
         Allocator(const Allocator& A) {
             //std::cout << "copy constructor" << std::endl;
-            bank = A.bank;
+            objects += 1;
         }
 
         template <typename U>
@@ -138,7 +142,8 @@ namespace My {
     private:
         static constexpr std::size_t default_block_size = 10;
         inline static std::size_t block_size = 10;
-        MemoryBank* bank;
+        inline static MemoryBank* bank = nullptr;
+        inline static std::size_t objects = 0;
     };
 }
 
