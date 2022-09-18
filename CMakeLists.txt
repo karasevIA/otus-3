@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 # Project name
 set(PATCH_VERSION "0" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
-project(allocator1 VERSION ${PROJECT_VESRION})
+project(allocator VERSION ${PROJECT_VESRION})
 
 # Include lib conan test
 if(TEST)
