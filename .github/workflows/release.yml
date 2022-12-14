@@ -1,0 +1,51 @@
+
+name: 'MyAllocator'
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      
+      - name: Prepair system
+        run: sudo apt-get update && sudo apt -y install python3-pip && pip install conan && conan profile new default --detect && conan profile update settings.compiler.libcxx=libstdc++11 default
+      
+      - name: Prepair build
+        run: mkdir build && cd build && conan install ..
+
+      - name: Build
+        run: cd build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DTEST=true -DDEBPACK=true -DPATCH_VERSION=${{ github.run_number }} .. && cmake --build .
+      
+      - name: Tests
+        run: cd build && cmake --build . --target test
+ 
+      - name: Create package
+        run: cd build && cmake --build . --target package
+ 
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.ALLOC_SECRET }}
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.ALLOC_SECRET }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/allocator-1.0.${{ github.run_number }}-Linux.deb
+          asset_name: allocator-1.0.${{ github.run_number }}-Linux.deb
+          asset_content_type: application/vnd.debian.binary-package
