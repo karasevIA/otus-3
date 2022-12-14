@@ -1,5 +1,5 @@
 #include <iostream>
-#include <vector>
+#include <map>
 
 #include <include/my_allocator.hpp>
 #include <include/my_container.hpp>
@@ -10,40 +10,36 @@ int factorial(int n) {
 
 int main()
 {
-    // std::cout << "Hello" << std::endl;
-    
-	// My::Allocator<int>::set_block_size(16);
-	// std::cout << "Init vector" << std::endl;
-
-	// std::vector<int, My::Allocator<int>> vector;
-
-	// for (int i = 0; i < 10; ++i) {
-	// 	vector.push_back(i);
-	// }
-
-	// for (const auto& v : vector) {
-	// 	std::cout << v << ' ';
-	// }
-	// std::cout << std::endl;
-
-	// auto other = vector;
-
-	My::Container<int, My::Allocator<int>> myvect;
-
+	std::map<int, int> mp;
+	
 	for (int i = 0; i < 10; ++i) {
-		myvect.push_back(factorial(i));
+		mp[i] = factorial(i);
 	}
 
-	for (auto e : myvect) {
-		std::cout << e << ' ';
+	My::Allocator<int>::set_block_size(10);
+	std::map<int, int, std::less<int>, My::Allocator<int>> mpa;
+	
+	for (int i = 0; i < 10; ++i) {
+		mpa[i] = factorial(i);
 	}
-	std::cout << std::endl;
 
-	///std::cout << "aaaa" << std::endl;
-	//for (const auto& v : other) {
-	//	std::cout << v << ' ';
-	//}
-	std::cout << std::endl;
+	for (auto&& m : mpa) {
+		std::cout << m.first << " " << m.second << std::endl;
+	}
+
+	My::Container<int> cont;
+	for (int i = 0; i < 10; ++i) {
+		cont.push_back(factorial(i));
+	}
+
+	My::Container<int, My::Allocator<int>> conta;
+	for (int i = 0; i < 10; ++i) {
+		conta.push_back(factorial(i));
+	}
+
+	for (auto&& c : conta) {
+		std::cout << c << std::endl;
+	}
 
     return 0;
 }

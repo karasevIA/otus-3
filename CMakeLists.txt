@@ -18,12 +18,15 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCES
     source/main.cpp
     include/my_allocator.hpp
+    include/my_container.hpp
 )
 
 # Source tests files
 set(TEST_SOURCES
+    test/source/test_container.cpp
     test/source/test_allocator.cpp
     include/my_allocator.hpp
+    include/my_container.hpp
 )
 
 # Include directories
