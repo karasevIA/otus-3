@@ -94,7 +94,6 @@ namespace My {
         using value_type = T;
         Allocator() {
             objects += 1;
-            //std::cout << "constructor" << std::endl;
             if (!bank) {
                 bank = reinterpret_cast<MemoryBank*>(std::calloc(1, sizeof(MemoryBank)));
                 std::size_t bs = block_size ? block_size : default_block_size;
@@ -111,11 +110,11 @@ namespace My {
             if (bank->used == 0 && objects == 0) {
                 bank->destruct();
                 std::free(bank);
+                bank = nullptr;
             }
         }
 
         Allocator(const Allocator& A) {
-            //std::cout << "copy constructor" << std::endl;
             objects += 1;
         }
 
@@ -123,12 +122,10 @@ namespace My {
         Allocator(const Allocator<U>&) {}
 
         T* allocate (std::size_t n) {
-            //std::cout << "allocate " << n << std::endl;
             return reinterpret_cast<T*>(bank->alloc(sizeof(T) * n));
         }
 
         void deallocate (T* p, std::size_t n) {
-            //std::cout << "dealocate " << n << std::endl;
             bank->free(p);
             //bank->print();
         }
